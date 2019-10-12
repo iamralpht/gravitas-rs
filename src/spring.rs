@@ -82,6 +82,14 @@ fn almost_zero(a: f32, epsilon: f32) -> bool {
     almost_equal(a, 0.0, epsilon)
 }
 
+/// a position controlled by a spring as defined by Hooke's law, `F = -kx * cv`.
+///
+/// Depending on the values specified for the spring's mass, constant and damping, the
+/// spring may be underdamped, critically damped or overdamped.
+/// <a href="http://www.stewartcalculus.com/data/CALCULUS%20Concepts%20and%20Contexts/upfiles/3c3-AppsOf2ndOrders_Stu.pdf">This textbook</a>
+/// provides a good overview of the spring model used by Gravitas.
+///
+/// A critically damped spring satisfies: `damping * damping - 4 * mass * spring_constant == 0`.
 #[derive(Clone, Copy)]
 pub struct Spring {
     mass: f32,
@@ -92,6 +100,9 @@ pub struct Spring {
     start_time: f32, // typically zero, but not if we were reconfigured while animating.
 }
 impl Spring {
+    /// Create a new spring with the given mass, spring constant and damping values.
+    ///
+    /// The spring starts out "snapped" to 0.0.
     pub fn new(mass: f32, spring_constant: f32, damping: f32) -> Spring {
         Spring {
             mass,
@@ -102,6 +113,9 @@ impl Spring {
             start_time: 0.0,
         }
     }
+    /// Set the spring's endpoint to the given position and velocity. If time is non-zero
+    /// then the velocity of the spring at that time (before these new values are applied)
+    /// is also included.
     pub fn set(&mut self, x: f32, velocity: f32, time: f32) {
         // If this is a request to go where we're already going then ignore it.
         if almost_equal(x, self.end, EPSILON) && almost_zero(velocity, EPSILON) {
@@ -129,6 +143,8 @@ impl Spring {
         self.end = x;
         self.start_time = time;
     }
+    /// "Snap" the spring and set the value. The spring simulation will return this value
+    /// with no velocity for all time (or until set is called again) once snapped.
     pub fn snap(&mut self, x: f32) {
         self.end = x;
         self.start_time = 0.0;

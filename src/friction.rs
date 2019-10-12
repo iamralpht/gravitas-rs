@@ -1,6 +1,10 @@
 use crate::Simulation;
 
-/// Implementation of a friction model. It slows down proportional to the amount of drag.
+/// a position with velocity that slows down due to drag.
+///
+/// This is good for objects that you fling&mdash;the scroll simulation uses this model in combination
+/// with a spring. It can also be used in combination with a constant velocity for infinite
+/// carousels, such as this one: <a href="https://cdn.rawgit.com/iamralpht/gravitas.js/master/examples/iTunesRadio/">Gravitas JavaScript Friction Example</a>.
 #[derive(Copy, Clone)]
 pub struct Friction {
     x: f32,
@@ -9,6 +13,8 @@ pub struct Friction {
     ln_drag: f32,
 }
 impl Friction {
+    /// Create a new friction simulation with the given drag value. For scrolling interfaces where
+    /// values are in pixels, a drag value of 0.001 feels quite good.
     pub fn new(drag: f32) -> Friction {
         Friction {
             x: 0.0,
@@ -17,10 +23,18 @@ impl Friction {
             ln_drag: drag.ln(),
         }
     }
+    /// Set the initial (time = 0.0) position and velocity for the friction simulation.
     pub fn set(&mut self, x: f32, v: f32) {
         self.x = x;
         self.v = v;
     }
+    /// Return the time (in seconds) at which the friction simulation will reach the specified position. This
+    /// value can be negative (which means the simulation would have reached that position if the velocity had
+    /// been in the other direction) or not a number (NaN) which means the simulation will never reach that position.
+    ///
+    /// This method is used by the scroll simulation to find out the exact time that the scroll position will
+    /// go beyond the scroll extent (at which time the velocity is put into a spring simulation which bounces the
+    /// scroll position back to the extent).
     pub fn time_for_position(&self, p: f32) -> f32 {
         if (p - self.x).abs() < std::f32::EPSILON {
             0.0
