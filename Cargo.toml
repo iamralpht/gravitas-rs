@@ -1,5 +1,6 @@
 [package]
 name = "gravitas"
+description = "one dimensional physics equations for ui"
 version = "0.1.0"
 authors = ["Ralph Thomas <ralpht@gmail.com>"]
 edition = "2018"
