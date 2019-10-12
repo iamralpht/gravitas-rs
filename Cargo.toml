@@ -1,5 +1,5 @@
 [package]
-name = "gravitas-rs"
+name = "gravitas"
 version = "0.1.0"
 authors = ["Ralph Thomas <ralpht@gmail.com>"]
 edition = "2018"

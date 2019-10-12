@@ -1,4 +1,4 @@
-use gravitas_rs::{Gravity, Simulation};
+use gravitas::{Gravity, Simulation};
 
 #[test]
 fn test_gravity() {

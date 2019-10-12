@@ -1,4 +1,4 @@
-use gravitas_rs::{Friction, Simulation};
+use gravitas::{Friction, Simulation};
 
 #[test]
 fn test_friction_initial() {

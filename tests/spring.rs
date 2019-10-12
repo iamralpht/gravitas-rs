@@ -1,4 +1,4 @@
-use gravitas_rs::{Simulation, Spring};
+use gravitas::{Simulation, Spring};
 
 #[test]
 fn test_snapped() {
