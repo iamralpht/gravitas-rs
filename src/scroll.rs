@@ -1,6 +1,8 @@
 use crate::{Friction, Simulation, Spring};
 
-// A combination of friction and springs to create a touch-driven scrolling simulation.
+/// a combination of friction and springs to create a touch-driven scrolling simulation.
+///
+/// <a href="https://cdn.rawgit.com/iamralpht/gravitas.js/master/examples/Scrolling/index.html">Gravitas JavaScript example of the scrolling simulation.</a>
 #[derive(Clone, Copy)]
 pub struct Scroll {
     extent: f32,
@@ -9,6 +11,7 @@ pub struct Scroll {
     spring_time: f32, // when we transition into using a spring
 }
 impl Scroll {
+    /// Create a new scroll simulation which allows scrolls between 0 and the given extent.
     pub fn new(extent: f32) -> Scroll {
         Scroll {
             extent,
@@ -17,6 +20,7 @@ impl Scroll {
             spring_time: std::f32::NAN,
         }
     }
+    /// Start a gesture-based scroll from the scroll position `x` with velocity `v`.
     pub fn set(&mut self, x: f32, v: f32) {
         self.friction.set(x, v);
         // If we're already into overscroll on either end then just start out in the spring. If
@@ -51,6 +55,7 @@ impl Scroll {
             }
         }
     }
+    /// Return the maximum extent which can be scrolled to.
     pub fn extent(&self) -> f32 {
         self.extent
     }
