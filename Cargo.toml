@@ -3,6 +3,9 @@ name = "gravitas"
 version = "0.1.0"
 authors = ["Ralph Thomas <ralpht@gmail.com>"]
 edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/iamralpht/gravitas-rs"
+repository = "https://github.com/iamralpht/gravitas-rs.git"
 readme = "README.md"
 
 [lib]
