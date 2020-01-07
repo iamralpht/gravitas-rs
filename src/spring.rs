@@ -1,4 +1,5 @@
 use crate::Simulation;
+use core::cmp::Ordering;
 
 #[derive(PartialEq, Clone, Copy)]
 enum SpringSolution {
@@ -20,26 +21,31 @@ impl SpringSolution {
     ) -> SpringSolution {
         // Solve the quadratic equation
         let cmk = damping * damping - 4.0 * mass * spring_constant;
-        if cmk == 0.0 {
-            // Critically damped.
-            let r = -damping / (2.0 * mass);
-            let c1 = initial;
-            let c2 = velocity / (r * initial);
-            SpringSolution::CriticallyDamped { r, c1, c2 }
-        } else if cmk > 0.0 {
-            // Overdamped
-            let r1 = (-damping - cmk.sqrt()) / (2.0 * mass);
-            let r2 = (-damping + cmk.sqrt()) / (2.0 * mass);
-            let c2 = (velocity - r1 * initial) / (r2 - r1);
-            let c1 = initial - c2;
-            SpringSolution::Overdamped { r1, r2, c1, c2 }
-        } else {
-            // Underdamped
-            let w = (4.0 * mass * spring_constant - damping * damping).sqrt() / (2.0 * mass);
-            let r = -(damping / 2.0 * mass);
-            let c1 = initial;
-            let c2 = (velocity - r * initial) / w;
-            SpringSolution::Underdamped { w, r, c1, c2 }
+        match cmk.partial_cmp(&0.0) {
+            Some(Ordering::Greater) => {
+                // Overdamped
+                let r1 = (-damping - cmk.sqrt()) / (2.0 * mass);
+                let r2 = (-damping + cmk.sqrt()) / (2.0 * mass);
+                let c2 = (velocity - r1 * initial) / (r2 - r1);
+                let c1 = initial - c2;
+                SpringSolution::Overdamped { r1, r2, c1, c2 }
+            }
+            Some(Ordering::Less) => {
+                // Underdamped
+                let w = (4.0 * mass * spring_constant - damping * damping).sqrt() / (2.0 * mass);
+                let r = -(damping / 2.0 * mass);
+                let c1 = initial;
+                let c2 = (velocity - r * initial) / w;
+                SpringSolution::Underdamped { w, r, c1, c2 }
+            }
+            _ => {
+                // Equal, or close enough.
+                // Critically damped.
+                let r = -damping / (2.0 * mass);
+                let c1 = initial;
+                let c2 = velocity / (r * initial);
+                SpringSolution::CriticallyDamped { r, c1, c2 }
+            }
         }
     }
     fn x(&self, time: f32) -> f32 {
