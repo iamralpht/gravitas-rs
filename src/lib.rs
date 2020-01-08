@@ -8,12 +8,14 @@
 //! of algebraic integration is lower CPU overhead, and no odd behavior if frames are dropped.
 mod friction;
 mod gravity;
+mod pager;
 mod scroll;
 mod simulation;
 mod spring;
 
 pub use friction::Friction;
 pub use gravity::Gravity;
+pub use pager::{Pager, SnapPoint as PagerSnapPoint, SnapQuery as PagerSnapQuery};
 pub use scroll::Scroll;
 pub use simulation::Simulation;
 pub use spring::Spring;
